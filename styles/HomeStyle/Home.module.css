@@ -1,0 +1,18 @@
+.ContainerWidth {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.showColumnAfterLGScrn{
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .hideColumnAfterLGScrn {
+        display: none;
+    }
+
+    .showColumnAfterLGScrn{
+        display: block;
+    }
+}

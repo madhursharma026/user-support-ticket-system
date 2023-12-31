@@ -1,0 +1,35 @@
+.ContainerWidth {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.HeaderStyle {
+    background: #0D131F;
+}
+
+.unActiveLink {
+    text-decoration: none;
+}
+
+.activeLink {
+    text-decoration: underline;
+}
+.navOptionsAfterLGScrn{
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .freshdeskLogo {
+        display: none;
+    }
+}
+
+@media (max-width: 991px) {
+    .navOptionsBeforeLGScrn {
+        display: none;
+    }
+
+    .navOptionsAfterLGScrn{
+        display: block;
+    }
+}
