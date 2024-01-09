@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useRouter } from 'next/router';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
@@ -158,8 +159,14 @@ export default function SingleTicketView() {
                             {ReactHtmlParser((ticketDetail.message))}
                         </h6>
                         <button type="button" className="btn btn-primary mt-4" onClick={() => router.back()}>Back</button>
-                        &emsp;
-                        <button type="button" className="btn btn-warning mt-4" onClick={() => makeTicketClosed(ticketDetail.id)}>Closed</button>
+                        {ticketDetail.status === 'closed' ?
+                            <></>
+                            :
+                            <>
+                                &emsp;
+                                <button type="button" className="btn btn-warning mt-4" onClick={() => makeTicketClosed(ticketDetail.id)}>Closed</button>
+                            </>
+                        }
                         &emsp;
                         <button type="button" className="btn btn-primary mt-4" onClick={() => handleShow()}>Reply</button>
                     </div>
@@ -175,6 +182,7 @@ export default function SingleTicketView() {
                                     <th className='p-3 fs-5'>Id</th>
                                     <th className='p-3 fs-5'>Title</th>
                                     <th className='p-3 fs-5'>Replied By</th>
+                                    <th className={`p-3 fs-5 ${styles.hideColumnAfterMDScrn}`}>Duration</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -183,6 +191,43 @@ export default function SingleTicketView() {
                                         <td style={{ fontWeight: 'bold' }}>{index + 1}</td>
                                         <td>{allTicketsReplies.message}</td>
                                         <td><b>{allTicketsReplies.replied_by.firstName}</b> ({allTicketsReplies.replied_by.userPosition})</td>
+                                        <td className={styles.hideColumnAfterMDScrn}>
+                                            {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).years() !== 0 ?
+                                                (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).years() + ' Years'
+                                                :
+                                                <>
+                                                    {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).months() !== 0 ?
+                                                        (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).months() + ' Months'
+                                                        :
+                                                        <>
+                                                            {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).days() !== 0 ?
+                                                                (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).days() + ' Days'
+                                                                :
+                                                                <>
+                                                                    {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).hours() !== 0 ?
+                                                                        (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).hours() + ' Hours'
+                                                                        :
+                                                                        <>
+                                                                            {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).minutes() !== 0 ?
+                                                                                (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).minutes() + ' Minutes'
+                                                                                :
+                                                                                <>
+                                                                                    {(moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).seconds() !== 0 ?
+                                                                                        (moment.duration(moment().diff(moment(new Date(Number(allTicketsReplies.ticket.duration))).format('YYYY-MM-DD HH:mm:ss')))).seconds() + ' Seconds'
+                                                                                        :
+                                                                                        <></>
+                                                                                    }
+                                                                                </>
+                                                                            }
+                                                                        </>
+                                                                    }
+                                                                </>
+                                                            }
+                                                        </>
+                                                    }
+                                                </>
+                                            }
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

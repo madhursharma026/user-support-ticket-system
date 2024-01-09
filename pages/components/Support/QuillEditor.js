@@ -2,6 +2,8 @@
 import ReactQuill from 'react-quill';
 import { Alert } from 'react-bootstrap';
 import 'react-quill/dist/quill.snow.css';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { useMutation } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import styles from '../../../styles/Support/support.module.css';
@@ -9,9 +11,13 @@ import { AllCategory, CreateTicket } from '@/pages/api/graphqlAPI';
 
 const QuillEditor = () => {
 
+  const handleShow = () => setShow(true);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
   const [alertBg, setAlertBg] = useState();
   const [showAlert, setShowAlert] = useState();
   const [alertData, setAlertData] = useState();
+  const [categoryId, setCategoryId] = useState('');
   const [All_Category] = useMutation(AllCategory);
   const [Create_Ticket] = useMutation(CreateTicket);
   const [allCategories, setAllCategories] = useState([]);
@@ -60,9 +66,11 @@ const QuillEditor = () => {
           }
         },
       }).then(async (res) => {
-        setShowAlert(true)
-        setAlertBg('success')
-        setAlertData(`Ticket with id (${res.data.createTicket.ticket_id}) Submit Successfully`)
+        // setShowAlert(true)
+        // setAlertBg('success')
+        // setAlertData(`Ticket with id (${res.data.createTicket.ticket_id}) Submit Successfully`)
+        setCategoryId(`${res.data.createTicket.ticket_id}`)
+        handleShow()
         setCategoryValue('')
         setCategoryTitle('')
         setCategoryPriority('')
@@ -84,61 +92,78 @@ const QuillEditor = () => {
   },)
 
   return (
-    <form onSubmit={(e) => formSubmit(e)}>
-      {showAlert ?
-        <Alert variant={alertBg} className='mb-0'>
-          {alertData}
-        </Alert>
-        :
-        <></>
-      }
-      <div className="mb-3">
-        <label for="ticketCategory" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Category</label>
-        <select className='form-control' value={categoryValue} onChange={(e) => setCategoryValue(e.target.value)} required style={{ width: "100%" }}>
-          <option value=''>Open this to select category</option>
-          {allCategories.map((allCategory, i) => {
-            return (
-              <option key={allCategory.id} value={allCategory.id}>
-                {allCategory.category_name}
-              </option>
-            );
-          })}
-          ;
-        </select>
-      </div>
-      <div className="mb-3">
-        <label for="ticketTitle" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Title</label>
-        <input type="text" className="form-control" id="ticketTitle" name='ticketTitle' placeholder="Enter ticket title" required value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} autoComplete='off' />
-      </div>
-      <div className="mb-3">
-        <label for="ticketPriority" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Priority</label>
-        <select className="form-select" id='ticketPriority' value={categoryPriority} onChange={(e) => setCategoryPriority(e.target.value)} aria-label="Default select example" required>
-          <option value=''>Open this to select priority</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-      </div>
-      <div className="mb-3">
-        <label for="ticketMessage" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Message</label>
-        <ReactQuill
-          theme="snow"
-          value={categoryMessage} onChange={(value) => setCategoryMessage(value)}
-          modules={modules}
-          formats={formats}
-          style={{ height: '200px', }}
-          placeholder='Enter your message'
-        />
-      </div>
-      <br />
-      {categoryMessageRequired ?
-        <div id="emailHelp" className="form-text text-danger">Message Required!</div>
-        :
-        <></>
-      }
-      <br />
-      <button type="submit" className={`btn btn-primary ${styles.callMeBack} my-3`}>Call me back</button>
-    </form>
+    <>
+      <form onSubmit={(e) => formSubmit(e)}>
+        {showAlert ?
+          <Alert variant={alertBg} className='mb-0'>
+            {alertData}
+          </Alert>
+          :
+          <></>
+        }
+        <div className="mb-3">
+          <label for="ticketCategory" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Category</label>
+          <select className='form-control' value={categoryValue} onChange={(e) => setCategoryValue(e.target.value)} required style={{ width: "100%" }}>
+            <option value=''>Open this to select category</option>
+            {allCategories.map((allCategory, i) => {
+              return (
+                <option key={allCategory.id} value={allCategory.id}>
+                  {allCategory.category_name}
+                </option>
+              );
+            })}
+            ;
+          </select>
+        </div>
+        <div className="mb-3">
+          <label for="ticketTitle" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Title</label>
+          <input type="text" className="form-control" id="ticketTitle" name='ticketTitle' placeholder="Enter ticket title" required value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} autoComplete='off' />
+        </div>
+        <div className="mb-3">
+          <label for="ticketPriority" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Priority</label>
+          <select className="form-select" id='ticketPriority' value={categoryPriority} onChange={(e) => setCategoryPriority(e.target.value)} aria-label="Default select example" required>
+            <option value=''>Open this to select priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div className="mb-3">
+          <label for="ticketMessage" className="form-label" style={{ fontSize: "14px", fontWeight: "600" }}>Message</label>
+          <ReactQuill
+            theme="snow"
+            value={categoryMessage} onChange={(value) => setCategoryMessage(value)}
+            modules={modules}
+            formats={formats}
+            style={{ height: '200px', }}
+            placeholder='Enter your message'
+          />
+        </div>
+        <br />
+        {categoryMessageRequired ?
+          <div id="emailHelp" className="form-text text-danger">Message Required!</div>
+          :
+          <></>
+        }
+        <br />
+        <button type="submit" className={`btn btn-primary ${styles.callMeBack} my-3`}>Call me back</button>
+      </form>
+      <Modal show={show} onHide={handleClose} centered backdrop="static">
+        <Modal.Header closeButton>
+          <Modal.Title>Ticket Detail</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5 className='text-center'>Ticket with id <b><u>({categoryId})</u></b> Submitted!</h5>
+          <h5 className='mt-4'>Automatic Response:</h5>
+          <h6>Hii, thank you for your ticket with id: <u>{categoryId}</u>, we are unavailable at the moment but we will reply upon return... Thank You!</h6>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

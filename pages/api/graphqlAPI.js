@@ -112,6 +112,7 @@ mutation CreateTicket($createTicketArgs: CreateTicketArgs!) {
     message
     status
     createdAt
+    duration
     user_id
     ticket_id
     category {
@@ -134,6 +135,7 @@ mutation GetAllTicketsBySingleUser($userId: Float!) {
     status
     user_id
     createdAt
+    duration
     ticket_id
     category {
       id
@@ -156,6 +158,7 @@ mutation FindSingleTicket($findSingleTicketId: Float!, $userId: Float!) {
     user_id
     createdAt
     ticket_id
+    duration
     category {
       id
       category_name
@@ -177,6 +180,7 @@ mutation updateStatusClosed($ticketId: Float!) {
     user_id
     createdAt
     ticket_id
+    duration
     category {
       id
       category_name
@@ -199,6 +203,7 @@ query GetAllClosedTicketsBySingleUser($userId: Float!) {
     user_id
     createdAt
     ticket_id
+    duration
     category {
       id
       category_name
@@ -220,6 +225,7 @@ query GetAllClosedTickets($adminUserId: Float!) {
     user_id
     createdAt
     ticket_id
+    duration
     category {
       id
       category_name
@@ -241,6 +247,7 @@ mutation getAllOpenedTickets($adminUserId: Float!) {
     message
     status
     user_id
+    duration
     category {
       id
       category_name
@@ -305,6 +312,7 @@ mutation GetAllRepliesBySingleTicket($ticketId: Float!) {
       ticket_id
       title
       user_id
+      duration
     }
   }
 }
@@ -378,3 +386,4 @@ mutation FindTotalAmount($findOneByIdId: String!) {
   }
 }
 `;
+

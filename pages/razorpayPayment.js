@@ -6,9 +6,14 @@ import { useMutation } from '@apollo/client';
 import styles from '../styles/Payment/payment.module.css';
 import { FindPaymentHistory, FindTotalAmount, createPaymentUsingRazorpay } from './api/graphqlAPI';
 import { Table } from 'react-bootstrap';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function RazorpayPayment() {
 
+    const router = useRouter();
     const handleShow = () => setShow(true);
     const [show, setShow] = useState(false);
     const [amount, setAmount] = useState("");
@@ -17,6 +22,7 @@ export default function RazorpayPayment() {
     const [totalAmount, setTotalAmount] = useState([]);
     const [showAlertData, setshowAlertData] = useState("");
     const [paymentHistory, setpaymentHistory] = useState([]);
+    const [responseData, setResponseData] = useState([]);
     const handleClose = () => (setShow(false), setAmount(''));
     const [Find_Total_Amount] = useMutation(FindTotalAmount);
     const [Get_Payment_History] = useMutation(FindPaymentHistory);
@@ -37,7 +43,6 @@ export default function RazorpayPayment() {
                     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Indian_Rupee_symbol.svg/640px-Indian_Rupee_symbol.svg.png",
                     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": async function (response) {
-                        // alert('Payment Id: ' + response.razorpay_payment_id);
                         await Create_Payment_Using_Razorpay({
                             variables: {
                                 createRazorpayArgs: {
@@ -48,6 +53,7 @@ export default function RazorpayPayment() {
                             }
                         })
                             .then(async (res) => {
+                                console.log(res.data.createRazorpay)
                                 setAlertData(true)
                                 setAlertDataBG('success')
                                 setshowAlertData('Payment Added Successfully!')
@@ -135,7 +141,8 @@ export default function RazorpayPayment() {
                                 <tr>
                                     <th className='p-3 fs-5'>Id</th>
                                     <th className='p-3 fs-5'>Order Is</th>
-                                    <th className='p-3 fs-5'>Amount</th>
+                                    <th className={`p-3 fs-5 ${styles.hideColumnAfterLGScrn}`}>Amount</th>
+                                    <th className={`p-3 fs-5`}>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,9 +150,14 @@ export default function RazorpayPayment() {
                                     <tr>
                                         <td style={{ fontWeight: 'bold' }}>{index + 1}</td>
                                         <td style={{ fontWeight: 'bold' }}>{paymentHistory.order_id}</td>
-                                        <td style={{ fontWeight: 'bold' }}>{paymentHistory.amount}</td>
+                                        <td style={{ fontWeight: 'bold' }} className={`${styles.hideColumnAfterLGScrn}`}>{paymentHistory.amount}</td>
                                         {/* {amounts.reduce((sum, item) => sum + parseFloat(item.amount), 0)} */}
-
+                                        <td className={styles.hideColumnAfterLGScrn}>
+                                            <button type="button" className="btn btn-primary" onClick={() => router.push({ pathname: 'InvoiceFormate', query: { amount: paymentHistory.amount } })}>View</button>
+                                        </td>
+                                        <td className={styles.showColumnAfterLGScrn}>
+                                            <button type="button" className="btn btn-primary">V</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -178,7 +190,7 @@ export default function RazorpayPayment() {
                     </Modal.Footer>
                 </Modal.Body>
             </Modal>
-        </div>
+        </div >
     )
 }
 
