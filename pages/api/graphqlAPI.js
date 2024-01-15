@@ -387,3 +387,25 @@ mutation FindTotalAmount($findOneByIdId: String!) {
 }
 `;
 
+export const GetAllTags = gql`
+mutation GetAllTags {
+  getAllTags {
+    id
+    tag_name
+    tag_description
+    createdAt
+  }
+}
+`;
+
+export const FindSingleTag = gql`
+mutation FindSingleTag($tagName: String!) {
+  findSingleTag(tagName: $tagName) {
+    id
+    tag_name
+    tag_description
+    createdAt
+  }
+}
+`;
+
